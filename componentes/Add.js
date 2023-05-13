@@ -78,6 +78,11 @@ export default function Add() {
   };
 
   const onSend = async () => {
+    if (newItem.name.trim() === "") {
+      Alert.alert("Error", "Please enter a title.");
+      return;
+    }
+
     await addDoc(collection(database, "products"), newItem);
     navigation.goBack();
   };

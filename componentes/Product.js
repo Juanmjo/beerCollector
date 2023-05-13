@@ -16,6 +16,7 @@ export default function Product({ id, image, name, description }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(name);
   const [editedDescription, setEditedDescription] = useState(description);
+  const [error, setError] = useState(false); // Nuevo estado para el error del título
 
   const onDelete = () => {
     Alert.alert(
@@ -35,6 +36,13 @@ export default function Product({ id, image, name, description }) {
 
   const onEdit = async () => {
     if (isEditing) {
+      // Validar el título antes de guardar los cambios
+      if (editedName.trim() === "") {
+        setError(true);
+        Alert.alert("Error", "Please enter a title");
+        return;
+      }
+
       // Guardar los cambios en la base de datos
       const docRef = doc(database, "products", id);
       const updatedProduct = {
@@ -43,8 +51,9 @@ export default function Product({ id, image, name, description }) {
       };
       await updateDoc(docRef, updatedProduct);
 
-      // Salir del modo de edición
+      // Salir del modo de edición y restablecer el estado de error
       setIsEditing(false);
+      setError(false);
     } else {
       // Entrar en el modo de edición
       setIsEditing(true);
