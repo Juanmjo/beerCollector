@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import * as ImagePicker from "expo-image-picker";
 import { database } from "../firebase-config";
@@ -24,6 +31,40 @@ export default function Add() {
       return;
     }
 
+    Alert.alert(
+      "Select Image",
+      "Choose an option:",
+      [
+        {
+          text: "Camera",
+          onPress: () => launchCamera(),
+        },
+        {
+          text: "Gallery",
+          onPress: () => launchImageLibrary(),
+        },
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const launchCamera = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setNewItem({ ...newItem, image: result.assets[0].uri });
+    }
+  };
+
+  const launchImageLibrary = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -32,7 +73,7 @@ export default function Add() {
     });
 
     if (!result.canceled) {
-      setNewItem({ ...newItem, image: result.uri });
+      setNewItem({ ...newItem, image: result.assets[0].uri });
     }
   };
 
@@ -45,7 +86,6 @@ export default function Add() {
     <View style={{ backgroundColor: "#F5F3F9" }}>
       <Text style={styles.title}>New Product</Text>
       <View style={styles.container}>
-        {/* <Button title="Seleccionar Imagen" onPress={selectImage} /> */}
         <TouchableOpacity onPress={selectImage} style={styles.button}>
           <Text style={styles.buttonText}>SELECT IMAGE</Text>
         </TouchableOpacity>
@@ -62,7 +102,6 @@ export default function Add() {
           placeholder="Description"
           style={styles.textInput}
         />
-        {/* <Button title="CREATE" onPress={onSend} /> */}
         <TouchableOpacity onPress={onSend} style={styles.button}>
           <Text style={styles.buttonText}>CREATE</Text>
         </TouchableOpacity>
