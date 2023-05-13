@@ -13,17 +13,13 @@ import { database } from "../firebase-config";
 import { collection, addDoc } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 
-export default function Add() {
-  const navigation = useNavigation();
-
+export default function EditImage() {
   const [newItem, setNewItem] = useState({
     image: null,
     name: "",
     description: "",
     createdAt: new Date(),
   });
-
-  const [imageSelected, setImageSelected] = useState(false);
 
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -63,7 +59,6 @@ export default function Add() {
 
     if (!result.canceled) {
       setNewItem({ ...newItem, image: result.assets[0].uri });
-      setImageSelected(true);
     }
   };
 
@@ -77,49 +72,14 @@ export default function Add() {
 
     if (!result.canceled) {
       setNewItem({ ...newItem, image: result.assets[0].uri });
-      setImageSelected(true);
     }
-  };
-
-  const onSend = async () => {
-    if (newItem.name.trim() === "") {
-      Alert.alert("Error", "Please enter a title.");
-      return;
-    }
-
-    if (!imageSelected) {
-      Alert.alert("Error", "Please select an image.");
-      return;
-    }
-
-    await addDoc(collection(database, "products"), newItem);
-    navigation.goBack();
   };
 
   return (
-    <View style={{ backgroundColor: "#F5F3F9" }}>
-      <Text style={styles.title}>New Product</Text>
-      <View style={styles.container}>
-        <TouchableOpacity onPress={selectImage} style={styles.button}>
-          <Text style={styles.buttonText}>SELECT IMAGE</Text>
-        </TouchableOpacity>
-        {newItem.image && (
-          <Image source={{ uri: newItem.image }} style={styles.image} />
-        )}
-        <TextInput
-          onChangeText={(text) => setNewItem({ ...newItem, name: text })}
-          placeholder="Product name"
-          style={styles.textInput}
-        />
-        <TextInput
-          onChangeText={(text) => setNewItem({ ...newItem, description: text })}
-          placeholder="Description"
-          style={styles.textInput}
-        />
-        <TouchableOpacity onPress={onSend} style={styles.button}>
-          <Text style={styles.buttonText}>CREATE</Text>
-        </TouchableOpacity>
-      </View>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={selectImage} style={styles.button}>
+        <Text style={styles.buttonText}>SELECT IMAGE</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -167,8 +127,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#000000",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20,
-    marginBottom: 30,
   },
 
   buttonText: {
