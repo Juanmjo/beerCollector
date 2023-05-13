@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Button, View, StyleSheet } from "react-native";
+import { Text, Button, View, StyleSheet, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { database } from "../firebase-config";
 import {
@@ -49,12 +49,14 @@ export default function Home() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Products</Text>
-      {products.map((product) => (
-        <Product key={product.id} {...product} />
-      ))}
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.title}>Products</Text>
+        {products.map((product) => (
+          <Product key={product.id} {...product} />
+        ))}
+      </View>
+    </ScrollView>
   );
 }
 
